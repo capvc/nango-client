@@ -1,0 +1,2273 @@
+openapi: 3.1.0
+info:
+  description: Nango API specs used to authorize & sync data with external APIs.
+  title: Nango API
+  version: 1.0.0
+servers:
+- description: Production server
+  url: https://api.nango.dev
+- description: Local server
+  url: http://localhost:3003
+paths:
+  /config:
+    get:
+      description: Returns a list of integrations
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_config_get_200_response'
+          description: Successfully returned a list of integrations
+    post:
+      description: Create a new integration
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/_config_post_request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_config_put_200_response'
+          description: Successfully created an integration
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_config_put_400_response'
+          description: Invalid request
+    put:
+      description: Edits an integration (only for OAuth APIs)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/_config_put_request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_config_put_200_response'
+          description: Successfully edit an integration
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_config_put_400_response'
+          description: Invalid request
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_config_put_400_response'
+          description: Unknown integration
+  /config/{providerConfigKey}:
+    delete:
+      description: Deletes a specific integration
+      parameters:
+      - description: The integration ID that you created in Nango.
+        explode: false
+        in: path
+        name: providerConfigKey
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "204":
+          description: Successfully deleled an integration
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_config_put_400_response'
+          description: Invalid request
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_config_put_400_response'
+          description: Unknown integration
+    get:
+      description: Returns a specific integration
+      parameters:
+      - description: The integration ID that you created in Nango.
+        explode: false
+        in: path
+        name: providerConfigKey
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: "If true, the response will contain the client ID, secret, scopes,\
+          \ auth_mode and app link - if applicable. include_creds is false by default."
+        explode: true
+        in: query
+        name: include_creds
+        required: false
+        schema:
+          type: boolean
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_config__providerConfigKey__get_200_response'
+          description: Successfully returned an integration
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_config_put_400_response'
+          description: Invalid request
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_config_put_400_response'
+          description: Unknown integration
+  /connection:
+    get:
+      description: Returns a list of connections without credentials
+      parameters:
+      - description: Filter the list of connections based on this connection ID.
+        explode: true
+        in: query
+        name: connectionId
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_connection_get_200_response'
+          description: Successfully returned a list of connections
+    post:
+      description: Adds a connection for which you already have credentials.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/_connection_post_request'
+        required: true
+      responses:
+        "200":
+          description: Successfully created an integrations
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_config_put_400_response'
+          description: Invalid request
+  /connection/{connectionId}:
+    delete:
+      description: Deletes a specific connection
+      parameters:
+      - description: The connection ID used to create the connection.
+        explode: false
+        in: path
+        name: connectionId
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: The integration ID used to create the connection (aka Unique
+          Key).
+        explode: true
+        in: query
+        name: provider_config_key
+        required: true
+        schema:
+          type: string
+        style: form
+      responses:
+        "204":
+          description: Successfully deleled an connection
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_config_put_400_response'
+          description: Invalid request
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_config_put_400_response'
+          description: Unknown connection
+    get:
+      description: Returns a specific connection with credentials
+      parameters:
+      - description: The connection ID used to create the connection.
+        explode: false
+        in: path
+        name: connectionId
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: The integration ID used to create the connection (aka Unique
+          Key).
+        explode: true
+        in: query
+        name: provider_config_key
+        required: true
+        schema:
+          type: string
+        style: form
+      - description: "If true, Nango will attempt to refresh the access access token\
+          \ regardless of its expiration status (false by default)."
+        explode: true
+        in: query
+        name: force_refresh
+        required: false
+        schema:
+          type: boolean
+        style: form
+      - description: "If true, return the refresh token as part of the response (false\
+          \ by default)."
+        explode: true
+        in: query
+        name: refresh_token
+        required: false
+        schema:
+          type: boolean
+        style: form
+      responses:
+        "200":
+          description: Successfully returned a connection
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_config_put_400_response'
+          description: Invalid request
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_config_put_400_response'
+          description: Unknown Connection
+  /connection/metadata:
+    patch:
+      description: "Edit custom metadata for the connection or connections (only overrides\
+        \ specified properties, not the entire metadata). If updating multiple connections\
+        \ pass in an array of connection ids instead of a string."
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/_connection_metadata_patch_request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_connection_metadata_patch_200_response'
+          description: Successfully updated the metadata for the connections
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_config_put_400_response'
+          description: Invalid request
+    post:
+      description: Set custom metadata for the connection or connections. If updating
+        multiple connections pass in an array of connection ids instead of a string.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/_connection_metadata_post_request'
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_connection_metadata_post_201_response'
+          description: Successfully set the metadata for the connections
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_config_put_400_response'
+          description: Invalid request
+  /connection/{connectionId}/metadata:
+    patch:
+      description: "Edit custom metadata for the connection (only overrides specified\
+        \ properties, not the entire metadata)."
+      parameters:
+      - description: The connection ID used to create the connection.
+        explode: false
+        in: path
+        name: connectionId
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: The integration ID used to create the connection (aka Unique
+          Key).
+        explode: false
+        in: header
+        name: Provider-Config-Key
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: object
+          description: Successfully updated the metadata
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_config_put_400_response'
+          description: Invalid request
+    post:
+      description: Set custom metadata for the connection.
+      parameters:
+      - description: The connection ID used to create the connection.
+        explode: false
+        in: path
+        name: connectionId
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: The integration ID used to create the connection (aka Unique
+          Key).
+        explode: false
+        in: header
+        name: Provider-Config-Key
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+        required: true
+      responses:
+        "201":
+          description: Successfully created an integrations
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_config_put_400_response'
+          description: Invalid request
+  /scripts/config:
+    get:
+      description: Return the configuration for all integration scripts
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_scripts_config_get_200_response'
+          description: Successfully returned integration scripts config
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_config_put_400_response'
+          description: Invalid request
+  /records:
+    get:
+      description: Returns data synced with Nango Sync
+      parameters:
+      - description: The data model to fetch
+        explode: true
+        in: query
+        name: model
+        required: true
+        schema:
+          type: string
+        style: form
+      - description: |
+          Each record from this method comes with a synchronization cursor in `_nango_metadata.cursor`. Save the last fetched record's cursor to track how far you've synced. By providing the cursor to this endpoint, you'll continue syncing from where you left off, receiving only post-cursor changes. This same cursor is used to paginate through the results of this endpoint.
+        explode: true
+        in: query
+        name: cursor
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: The maximum number of records to return. Defaults to 100.
+        explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          type: integer
+        style: form
+      - description: Filter to only show results that have been added or updated or
+          deleted.
+        explode: true
+        in: query
+        name: filter
+        required: false
+        schema:
+          enum:
+          - added
+          - updated
+          - deleted
+          type: string
+        style: form
+      - description: "Timestamp, e.g. 2023-05-31T11:46:13.390Z. If passed only records\
+          \ modified after this timestamp are returned, otherwise all records are\
+          \ returned."
+        explode: true
+        in: query
+        name: modified_after
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: "DEPRECATED (use modified_after) Timestamp, e.g. 2023-05-31T11:46:13.390Z.\
+          \ If passed, only records modified after this timestamp are returned, otherwise\
+          \ all records are returned."
+        explode: true
+        in: query
+        name: delta (deprecated)
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: The connection ID used to create the connection.
+        explode: false
+        in: header
+        name: Connection-Id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: The integration ID used to create the connection (aka Unique
+          Key).
+        explode: false
+        in: header
+        name: Provider-Config-Key
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_records_get_200_response'
+          description: Successfully returned records
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_config_put_400_response'
+          description: Invalid request
+  /sync/records:
+    get:
+      description: Returns data synced with Nango Sync
+      parameters:
+      - description: The data model to fetch
+        explode: true
+        in: query
+        name: model
+        required: true
+        schema:
+          type: string
+        style: form
+      - description: "Timestamp, e.g. 2023-05-31T11:46:13.390Z. If passed only records\
+          \ added or updated after this timestamp are returned, otherwise all records\
+          \ are returned."
+        explode: true
+        in: query
+        name: delta
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: "The maximum number of records to return. If not passed, all\
+          \ records are returned."
+        explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          type: integer
+        style: form
+      - description: "The number of records to skip. If not passed, no records are\
+          \ skipped."
+        explode: true
+        in: query
+        name: offset
+        required: false
+        schema:
+          type: integer
+        style: form
+      - description: "Set how the records are sorted. The default is id. The options\
+          \ are 'created_at', 'updated_at', 'id'."
+        explode: true
+        in: query
+        name: sort_by
+        required: false
+        schema:
+          enum:
+          - created_at
+          - updated_at
+          - id
+          type: string
+        style: form
+      - description: Set the order of results. The default is 'desc'. The options
+          are 'desc' or 'asc'.
+        explode: true
+        in: query
+        name: order
+        required: false
+        schema:
+          enum:
+          - desc
+          - asc
+          type: string
+        style: form
+      - description: "Filter to only show results that have been added or updated\
+          \ or deleted. Helpful when used in conjuction with the delta parameter to\
+          \ retrieve a subset or records that were added, updated, or deleted with\
+          \ the latest sync."
+        explode: true
+        in: query
+        name: filter
+        required: false
+        schema:
+          enum:
+          - added
+          - updated
+          - deleted
+          type: string
+        style: form
+      - description: The connection ID used to create the connection.
+        explode: false
+        in: header
+        name: Connection-Id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: The integration ID used to create the connection (aka Unique
+          Key).
+        explode: false
+        in: header
+        name: Provider-Config-Key
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/_sync_records_get_200_response_inner'
+                type: array
+          description: Successfully returned records
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_config_put_400_response'
+          description: Invalid request
+  /sync/trigger:
+    post:
+      description: "Triggers an additional, one-off execution of specified sync(s)\
+        \ (for a given connection or all applicable connections if no connection is\
+        \ specified)."
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/_sync_trigger_post_request'
+      responses:
+        "200":
+          description: Successfully triggered the sync
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_config_put_400_response'
+          description: Invalid request
+  /sync/start:
+    post:
+      description: Starts the schedule of specified sync(s) for a given connection
+        or all applicable connections if no connection is specified.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/_sync_start_post_request'
+      responses:
+        "200":
+          description: Successfully started the sync
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_config_put_400_response'
+          description: Invalid request
+  /sync/pause:
+    post:
+      description: Pauses the schedule of specified sync(s) for a given connection
+        or all applicable connections if no connection is specified.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/_sync_pause_post_request'
+      responses:
+        "200":
+          description: Successfully paused the sync
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_config_put_400_response'
+          description: Invalid request
+  /sync/status:
+    get:
+      description: Get the status of specified sync(s) (for a given connection or
+        all applicable connections if no connection is specified)
+      parameters:
+      - description: The ID of the integration you established within Nango
+        explode: true
+        in: query
+        name: provider_config_key
+        required: true
+        schema:
+          type: string
+        style: form
+      - description: The name of the syncs you want to fetch a status for. Pass in
+          "*" to return all syncs per the integration
+        explode: true
+        in: query
+        name: syncs
+        required: true
+        schema:
+          type: string
+        style: form
+      - description: "The ID of the connection. If omitted, all connections will be\
+          \ surfaced."
+        explode: true
+        in: query
+        name: connection_id
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_sync_status_get_200_response'
+          description: Successfully returned a list of syncs and their status
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_config_put_400_response'
+          description: Invalid request
+  /sync/update-connection-frequency:
+    put:
+      description: "Override a sync's default frequency for a specific connection,\
+        \ or revert to the default frequency."
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/_sync_update_connection_frequency_put_request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_sync_update_connection_frequency_put_200_response'
+          description: Successfully updated the frequency
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_config_put_400_response'
+          description: Invalid request
+  /action/trigger:
+    post:
+      description: Triggers an action for a connection
+      parameters:
+      - description: The connection ID used to create the connection.
+        explode: false
+        in: header
+        name: Connection-Id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: The integration ID used to create the connection (aka Unique
+          Key).
+        explode: false
+        in: header
+        name: Provider-Config-Key
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/_action_trigger_post_request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_action_trigger_post_200_response'
+          description: Returns the result of the action
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_config_put_400_response'
+          description: Invalid request
+  /environment-variables:
+    get:
+      description: Retrieve the environment variables as added in the Nango dashboard
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/_environment_variables_get_200_response_inner'
+                type: array
+          description: Retrieve the environment variables as added in the Nango dashboard
+  /proxy/{anyPath}:
+    delete:
+      description: Make a DELETE request with the Proxy.
+      parameters:
+      - explode: false
+        in: path
+        name: anyPath
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: true
+        in: query
+        name: $ANY_QUERY_PARAMS
+        required: true
+        schema:
+          type: string
+        style: form
+      - description: The connection ID used to create the connection.
+        explode: false
+        in: header
+        name: Connection-Id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: The integration ID used to create the connection (aka Unique
+          Key).
+        explode: false
+        in: header
+        name: Provider-Config-Key
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: "The number of retries in case of failure (with exponential back-off).\
+          \ Optional, default 0."
+        explode: false
+        in: header
+        name: Retries
+        required: false
+        schema:
+          type: string
+        style: simple
+      - description: Provide an API base URL when the base API is not listed in the
+          providers.yaml or it needs to be overridden. Optional
+        explode: false
+        in: header
+        name: Base-Url-Override
+        required: false
+        schema:
+          type: string
+        style: simple
+      - description: "Override the decompress option when making requests. Optional,\
+          \ defaults to false"
+        explode: false
+        in: header
+        name: Decompress
+        required: false
+        schema:
+          type: string
+        style: simple
+      - description: Any other headers you send are passed on to the external API
+        explode: false
+        in: header
+        name: nango-proxy-$ANY_HEADER
+        required: false
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          description: The response exactly as returned by the external API
+    get:
+      description: Make a GET request with the Proxy.
+      parameters:
+      - explode: false
+        in: path
+        name: anyPath
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: true
+        in: query
+        name: $ANY_QUERY_PARAMS
+        required: true
+        schema:
+          type: string
+        style: form
+      - description: The connection ID used to create the connection.
+        explode: false
+        in: header
+        name: Connection-Id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: The integration ID used to create the connection (aka Unique
+          Key).
+        explode: false
+        in: header
+        name: Provider-Config-Key
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: "The number of retries in case of failure (with exponential back-off).\
+          \ Optional, default 0."
+        explode: false
+        in: header
+        name: Retries
+        required: false
+        schema:
+          type: string
+        style: simple
+      - description: Comma separated status codes to explicitly retry on in addition
+          to the default 5xx and 429.
+        explode: false
+        in: header
+        name: Retry On
+        required: false
+        schema:
+          type: string
+        style: simple
+      - description: Provide an API base URL when the base API is not listed in the
+          providers.yaml or it needs to be overridden. Optional
+        explode: false
+        in: header
+        name: Base-Url-Override
+        required: false
+        schema:
+          type: string
+        style: simple
+      - description: "Override the decompress option when making requests. Optional,\
+          \ defaults to false"
+        explode: false
+        in: header
+        name: Decompress
+        required: false
+        schema:
+          type: string
+        style: simple
+      - description: Any other headers you send are passed on to the external API
+        explode: false
+        in: header
+        name: nango-proxy-$ANY_HEADER
+        required: false
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          description: The response exactly as returned by the external API
+    patch:
+      description: Make a PATCH request with the Proxy.
+      parameters:
+      - explode: false
+        in: path
+        name: anyPath
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: The connection ID used to create the connection.
+        explode: false
+        in: header
+        name: Connection-Id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: The integration ID used to create the connection (aka Unique
+          Key).
+        explode: false
+        in: header
+        name: Provider-Config-Key
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: "The number of retries in case of failure (with exponential back-off).\
+          \ Optional, default 0."
+        explode: false
+        in: header
+        name: Retries
+        required: false
+        schema:
+          type: string
+        style: simple
+      - description: Provide an API base URL when the base API is not listed in the
+          providers.yaml or it needs to be overridden. Optional
+        explode: false
+        in: header
+        name: Base-Url-Override
+        required: false
+        schema:
+          type: string
+        style: simple
+      - description: "Override the decompress option when making requests. Optional,\
+          \ defaults to false"
+        explode: false
+        in: header
+        name: Decompress
+        required: false
+        schema:
+          type: string
+        style: simple
+      - description: Any other headers you send are passed on to the external API
+        explode: false
+        in: header
+        name: nango-proxy-$ANY_HEADER
+        required: false
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/_proxy__anyPath__put_request'
+      responses:
+        "200":
+          description: The response exactly as returned by the external API
+    post:
+      description: Make a POST request with the Proxy.
+      parameters:
+      - explode: false
+        in: path
+        name: anyPath
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: The connection ID used to create the connection.
+        explode: false
+        in: header
+        name: Connection-Id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: The integration ID used to create the connection (aka Unique
+          Key).
+        explode: false
+        in: header
+        name: Provider-Config-Key
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: "The number of retries in case of failure (with exponential back-off).\
+          \ Optional, default 0."
+        explode: false
+        in: header
+        name: Retries
+        required: false
+        schema:
+          type: string
+        style: simple
+      - description: Provide an API base URL when the base API is not listed in the
+          providers.yaml or it needs to be overridden. Optional
+        explode: false
+        in: header
+        name: Base-Url-Override
+        required: false
+        schema:
+          type: string
+        style: simple
+      - description: "Override the decompress option when making requests. Optional,\
+          \ defaults to false"
+        explode: false
+        in: header
+        name: Decompress
+        required: false
+        schema:
+          type: string
+        style: simple
+      - description: Any other headers you send are passed on to the external API
+        explode: false
+        in: header
+        name: nango-proxy-$ANY_HEADER
+        required: false
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/_proxy__anyPath__put_request'
+      responses:
+        "200":
+          description: The response exactly as returned by the external API
+    put:
+      description: Make a PUT request with the Proxy.
+      parameters:
+      - explode: false
+        in: path
+        name: anyPath
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: The connection ID used to create the connection.
+        explode: false
+        in: header
+        name: Connection-Id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: The integration ID used to create the connection (aka Unique
+          Key).
+        explode: false
+        in: header
+        name: Provider-Config-Key
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: "The number of retries in case of failure (with exponential back-off).\
+          \ Optional, default 0."
+        explode: false
+        in: header
+        name: Retries
+        required: false
+        schema:
+          type: string
+        style: simple
+      - description: Provide an API base URL when the base API is not listed in the
+          providers.yaml or it needs to be overridden. Optional
+        explode: false
+        in: header
+        name: Base-Url-Override
+        required: false
+        schema:
+          type: string
+        style: simple
+      - description: "Override the decompress option when making requests. Optional,\
+          \ defaults to false"
+        explode: false
+        in: header
+        name: Decompress
+        required: false
+        schema:
+          type: string
+        style: simple
+      - description: Any other headers you send are passed on to the external API
+        explode: false
+        in: header
+        name: nango-proxy-$ANY_HEADER
+        required: false
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/_proxy__anyPath__put_request'
+      responses:
+        "200":
+          description: The response exactly as returned by the external API
+components:
+  schemas:
+    _config_put_request:
+      properties:
+        provider_config_key:
+          description: The integration ID that you created on Nango.
+          type: string
+        provider:
+          description: The Nango API Configuration.
+          type: string
+        oauth_client_id:
+          description: The ID of your OAuth app (registed with the external API).
+          type: string
+        oauth_client_secret:
+          description: The secret of your OAuth app (registed with the external API).
+          type: string
+        oauth_scopes:
+          description: Comma separated list of scopes.
+          type: string
+      required:
+      - oauth_client_id
+      - oauth_client_secret
+      - provider
+      - provider_config_key
+    _connection_get_200_response:
+      example:
+        configs:
+        - metadata: "{}"
+          connection_id: connection_id
+          provider: provider
+          provider_config_key: provider_config_key
+          created: created
+          id: 0
+        - metadata: "{}"
+          connection_id: connection_id
+          provider: provider
+          provider_config_key: provider_config_key
+          created: created
+          id: 0
+      properties:
+        configs:
+          items:
+            $ref: '#/components/schemas/_connection_get_200_response_configs_inner'
+          type: array
+      required:
+      - configs
+    _config_put_200_response:
+      example:
+        config:
+          provider: provider
+          unique_key: unique_key
+      properties:
+        config:
+          $ref: '#/components/schemas/_config_get_200_response_configs_inner'
+      required:
+      - config
+    _proxy__anyPath__put_request:
+      properties:
+        $ANY_BODY_PARAMS:
+          type: string
+    _scripts_config_get_200_response:
+      example:
+        syncs:
+        - last_deployed: 2024-02-01T09:09:03.502Z
+          models:
+          - name: GithubIssue
+            fields:
+            - name: title
+              type: string
+            - name: title
+              type: string
+          - name: GithubIssue
+            fields:
+            - name: title
+              type: string
+            - name: title
+              type: string
+          endpoints:
+          - "{}"
+          - "{}"
+          sync_type: INCREMENTAL
+          pre_built: true
+          webhookSubscriptions:
+          - webhookSubscriptions
+          - webhookSubscriptions
+          track_deletes: true
+          description: |
+            Fetches the Github issues from all a user's repositories.
+            Details: full sync, doesn't track deletes, metadata is not required.
+          type: sync
+          version: 0.0.3
+          nango_yaml_version: v2
+          auto_start: true
+          input: "{}"
+          name: github-issues
+          is_public: true
+          attributes: "{}"
+          returns:
+          - GithubIssue
+          - GithubIssue
+          scopes:
+          - public_repo
+          - public_repo
+          runs: every 30 minutes
+        - last_deployed: 2024-02-01T09:09:03.502Z
+          models:
+          - name: GithubIssue
+            fields:
+            - name: title
+              type: string
+            - name: title
+              type: string
+          - name: GithubIssue
+            fields:
+            - name: title
+              type: string
+            - name: title
+              type: string
+          endpoints:
+          - "{}"
+          - "{}"
+          sync_type: INCREMENTAL
+          pre_built: true
+          webhookSubscriptions:
+          - webhookSubscriptions
+          - webhookSubscriptions
+          track_deletes: true
+          description: |
+            Fetches the Github issues from all a user's repositories.
+            Details: full sync, doesn't track deletes, metadata is not required.
+          type: sync
+          version: 0.0.3
+          nango_yaml_version: v2
+          auto_start: true
+          input: "{}"
+          name: github-issues
+          is_public: true
+          attributes: "{}"
+          returns:
+          - GithubIssue
+          - GithubIssue
+          scopes:
+          - public_repo
+          - public_repo
+          runs: every 30 minutes
+        provider: github
+        postConnectionScripts:
+        - postConnectionScripts
+        - postConnectionScripts
+        actions:
+        - last_deployed: 2024-02-28T20:16:38.052Z
+          models:
+          - name: GithubIssue
+            fields:
+            - name: id
+              type: integer
+            - name: id
+              type: integer
+          - name: GithubIssue
+            fields:
+            - name: id
+              type: integer
+            - name: id
+              type: integer
+          endpoints:
+          - "{}"
+          - "{}"
+          pre_built: false
+          description: |
+            Fetches the Github issues from all a user's repositories.
+            Details: full sync, doesn't track deletes, metadata is not required.
+          type: sync
+          version: "4"
+          nango_yaml_version: v2
+          input: "{}"
+          name: github-issues
+          is_public: false
+          attributes: "{}"
+          returns: "{}"
+          scopes:
+          - public_repo
+          - public_repo
+        - last_deployed: 2024-02-28T20:16:38.052Z
+          models:
+          - name: GithubIssue
+            fields:
+            - name: id
+              type: integer
+            - name: id
+              type: integer
+          - name: GithubIssue
+            fields:
+            - name: id
+              type: integer
+            - name: id
+              type: integer
+          endpoints:
+          - "{}"
+          - "{}"
+          pre_built: false
+          description: |
+            Fetches the Github issues from all a user's repositories.
+            Details: full sync, doesn't track deletes, metadata is not required.
+          type: sync
+          version: "4"
+          nango_yaml_version: v2
+          input: "{}"
+          name: github-issues
+          is_public: false
+          attributes: "{}"
+          returns: "{}"
+          scopes:
+          - public_repo
+          - public_repo
+        providerConfigKey: providerConfigKey
+      properties:
+        providerConfigKey:
+          type: string
+        syncs:
+          items:
+            $ref: '#/components/schemas/_scripts_config_get_200_response_syncs_inner'
+          type: array
+        actions:
+          items:
+            $ref: '#/components/schemas/_scripts_config_get_200_response_actions_inner'
+          type: array
+        postConnectionScripts:
+          items:
+            description: TODO default missing array inner type to string
+            type: string
+          type: array
+        provider:
+          example: github
+          type: string
+    _sync_update_connection_frequency_put_request:
+      properties:
+        provider_config_key:
+          description: The ID of the integration you established within Nango
+          type: string
+        connection_id:
+          description: The ID of the connection
+          type: string
+        sync_name:
+          description: The name of the sync you want to update
+          type: string
+        frequency:
+          description: "The frequency you want to set (ex: 'every hour'). Set null\
+            \ to revert to the default frequency. Uses the https://github.com/vercel/ms\
+            \ notations. Min frequency: 5 minutes."
+          type: string
+          nullable: true
+      required:
+      - connection_id
+      - frequency
+      - provider_config_key
+      - sync_name
+    _config__providerConfigKey__get_200_response_config_syncs_inner:
+      example:
+        updated_at: updated_at
+        name: name
+        created_at: created_at
+        description: description
+      properties:
+        name:
+          description: The name of the sync.
+          type: string
+        created_at:
+          description: The creation timestamp of the sync.
+          type: string
+        updated_at:
+          description: The last updated timestamp of the sync.
+          type: string
+        description:
+          description: Description of what the sync does and details about it
+          type: string
+    _scripts_config_get_200_response_syncs_inner_models_inner:
+      example:
+        name: GithubIssue
+        fields:
+        - name: title
+          type: string
+        - name: title
+          type: string
+      properties:
+        name:
+          example: GithubIssue
+          type: string
+        fields:
+          items:
+            $ref: '#/components/schemas/_scripts_config_get_200_response_syncs_inner_models_inner_fields_inner'
+          type: array
+    _scripts_config_get_200_response_actions_inner_models_inner:
+      example:
+        name: GithubIssue
+        fields:
+        - name: id
+          type: integer
+        - name: id
+          type: integer
+      properties:
+        name:
+          example: GithubIssue
+          type: string
+        fields:
+          items:
+            $ref: '#/components/schemas/_scripts_config_get_200_response_actions_inner_models_inner_fields_inner'
+          type: array
+    _connection_metadata_post_201_response:
+      example:
+        metadata: "{}"
+        connection_id: connection-123
+        provider_config_key: provider_config_key
+      properties:
+        connection_id:
+          $ref: '#/components/schemas/_connection_metadata_post_201_response_connection_id'
+        provider_config_key:
+          description: The integration ID used to create the connection (aka Unique
+            Key).
+          type: string
+        metadata:
+          type: object
+    _scripts_config_get_200_response_syncs_inner:
+      example:
+        last_deployed: 2024-02-01T09:09:03.502Z
+        models:
+        - name: GithubIssue
+          fields:
+          - name: title
+            type: string
+          - name: title
+            type: string
+        - name: GithubIssue
+          fields:
+          - name: title
+            type: string
+          - name: title
+            type: string
+        endpoints:
+        - "{}"
+        - "{}"
+        sync_type: INCREMENTAL
+        pre_built: true
+        webhookSubscriptions:
+        - webhookSubscriptions
+        - webhookSubscriptions
+        track_deletes: true
+        description: |
+          Fetches the Github issues from all a user's repositories.
+          Details: full sync, doesn't track deletes, metadata is not required.
+        type: sync
+        version: 0.0.3
+        nango_yaml_version: v2
+        auto_start: true
+        input: "{}"
+        name: github-issues
+        is_public: true
+        attributes: "{}"
+        returns:
+        - GithubIssue
+        - GithubIssue
+        scopes:
+        - public_repo
+        - public_repo
+        runs: every 30 minutes
+      properties:
+        name:
+          example: github-issues
+          type: string
+        type:
+          example: sync
+          type: string
+        models:
+          items:
+            $ref: '#/components/schemas/_scripts_config_get_200_response_syncs_inner_models_inner'
+          type: array
+        sync_type:
+          example: INCREMENTAL
+          type: string
+        runs:
+          example: every 30 minutes
+          type: string
+        track_deletes:
+          type: boolean
+        auto_start:
+          type: boolean
+        last_deployed:
+          example: 2024-02-01T09:09:03.502Z
+          type: string
+        is_public:
+          type: boolean
+        pre_built:
+          type: boolean
+        version:
+          example: 0.0.3
+          type: string
+        attributes:
+          type: object
+        input:
+          type: object
+        returns:
+          items:
+            example: GithubIssue
+            type: string
+          type: array
+        description:
+          example: |
+            Fetches the Github issues from all a user's repositories.
+            Details: full sync, doesn't track deletes, metadata is not required.
+          type: string
+        scopes:
+          items:
+            example: public_repo
+            type: string
+          type: array
+        endpoints:
+          items:
+            type: object
+          type: array
+        nango_yaml_version:
+          example: v2
+          type: string
+        webhookSubscriptions:
+          items:
+            description: TODO default missing array inner type to string
+            type: string
+          type: array
+    _config__providerConfigKey__get_200_response_config_actions_inner:
+      example:
+        updated_at: updated_at
+        name: name
+        created_at: created_at
+      properties:
+        name:
+          description: The name of the action.
+          type: string
+        created_at:
+          description: The creation timestamp of the sync.
+          type: string
+        updated_at:
+          description: The last updated timestamp of the sync.
+          type: string
+    _scripts_config_get_200_response_syncs_inner_models_inner_fields_inner:
+      example:
+        name: title
+        type: string
+      properties:
+        name:
+          example: title
+          type: string
+        type:
+          example: string
+          type: string
+    _sync_pause_post_request:
+      properties:
+        provider_config_key:
+          description: The ID of the integration that you established within Nango.
+          type: string
+        connection_id:
+          description: "The ID of the connection. If omitted, the syncs will be paused\
+            \ for all relevant connections."
+          type: string
+        syncs:
+          description: A list of sync names that you wish to pause.
+          items:
+            type: string
+          type: array
+      required:
+      - provider_config_key
+      - syncs
+    _sync_status_get_200_response_syncs_inner:
+      example:
+        name: name
+        nextScheduledSyncAt: nextScheduledSyncAt
+        latestResult: "{}"
+        id: id
+        type: INCREMENTAL
+        status: RUNNING
+        finishedAt: finishedAt
+        frequency: frequency
+      properties:
+        id:
+          description: The unique identifier for the sync.
+          type: string
+        name:
+          description: The name of the sync.
+          type: string
+        status:
+          description: The current status of the sync.
+          enum:
+          - RUNNING
+          - PAUSED
+          - STOPPED
+          - SUCCESS
+          - ERROR
+          type: string
+        type:
+          description: The most recent sync type completed
+          enum:
+          - INCREMENTAL
+          - INITIAL
+          type: string
+        finishedAt:
+          description: ISO string of the most recently completed sync
+          type: string
+        nextScheduledSyncAt:
+          description: ISO string of the next scheduled sync time
+          type: string
+        frequency:
+          description: The execution frequency of the sync
+          type: string
+        latestResult:
+          description: "Additional information regarding the latest result of the\
+            \ sync. Contains a model name with added, updated and deleted records"
+          type: object
+    _config_put_400_response:
+      example:
+        message: message
+      properties:
+        message:
+          type: string
+    _connection_metadata_patch_request_connection_id:
+      oneOf:
+      - description: The connection ID used to update the metadata on. Accepts an
+          array of connection ids as well
+        example: connection-123
+        type: string
+      - description: The connection IDs used to update the metadata on. If one connection
+          id is invalid in the array the entire operation is aborted with no changes
+          made.
+        items:
+          example: connection-123
+          type: string
+    _sync_trigger_post_request:
+      properties:
+        provider_config_key:
+          description: The ID of the integration that you established within Nango.
+          type: string
+        connection_id:
+          description: "The ID of the connection. If omitted, the syncs will be triggered\
+            \ for all relevant connections."
+          type: string
+        syncs:
+          description: "An array of sync names to trigger. If the array is empty,\
+            \ all syncs are triggered."
+          items:
+            type: string
+          type: array
+        full_resync:
+          description: Clear the records and reset the "lastSyncDate" associated with
+            the sync before triggering a new sync job.
+          type: boolean
+      required:
+      - provider_config_key
+      - syncs
+    _sync_records_get_200_response_inner__nango_metadata:
+      example:
+        first_seen_at: 2023-09-18T15:20:35.941305+00:00
+        last_action: ADDED
+        deleted_at: deleted_at
+        last_modified_at: 2023-09-18T15:20:35.941305+00:00
+      properties:
+        deleted_at:
+          description: The timestamp at which Nango detected the record as deleted
+          type: string
+          nullable: true
+        last_action:
+          description: The last action seen on this record
+          enum:
+          - ADDED
+          - UPDATED
+          - DELETED
+          type: string
+        first_seen_at:
+          description: The timestamp at which Nango first saw this record
+          example: 2023-09-18T15:20:35.941305+00:00
+          type: string
+        last_modified_at:
+          description: The timestamp at which Nango last detected a change to this
+            record
+          example: 2023-09-18T15:20:35.941305+00:00
+          type: string
+    _connection_metadata_post_201_response_connection_id:
+      oneOf:
+      - description: The connection ID used to set the metadata on. Returns an array
+          of connection ids if an array is passed in.
+        example: connection-123
+        type: string
+      - description: The connection IDs used to set the metadata on. If one connection
+          id is invalid in the array the entire operation is aborted with no changes
+          made.
+        items:
+          example: connection-123
+          type: string
+    _sync_update_connection_frequency_put_200_response:
+      example:
+        frequency: frequency
+      properties:
+        frequency:
+          description: The updated frequency value
+          type: string
+    _action_trigger_post_request:
+      properties:
+        action_name:
+          description: The name of the action to trigger.
+          type: string
+        input:
+          description: The necessary input for your action's 'runAction' function.
+          type: object
+      required:
+      - action_name
+    _config__providerConfigKey__get_200_response_config:
+      example:
+        provider: provider
+        syncs:
+        - updated_at: updated_at
+          name: name
+          created_at: created_at
+          description: description
+        - updated_at: updated_at
+          name: name
+          created_at: created_at
+          description: description
+        unique_key: unique_key
+        actions:
+        - updated_at: updated_at
+          name: name
+          created_at: created_at
+        - updated_at: updated_at
+          name: name
+          created_at: created_at
+      properties:
+        unique_key:
+          description: The integration ID that you created in Nango.
+          type: string
+        provider:
+          description: The Nango API Configuration.
+          type: string
+        actions:
+          items:
+            $ref: '#/components/schemas/_config__providerConfigKey__get_200_response_config_actions_inner'
+          type: array
+        syncs:
+          items:
+            $ref: '#/components/schemas/_config__providerConfigKey__get_200_response_config_syncs_inner'
+          type: array
+      required:
+      - provider
+      - unique_key
+    _records_get_200_response_records_inner__nango_metadata:
+      example:
+        cursor: MjAyNC0wMy0wNFQwNjo1OTo1MS40NzE0NDEtMDU6MDB8fDE1Y2NjODA1LTY0ZDUtNDk0MC1hN2UwLTQ1ZmM3MDQ5OTdhMQ==
+        first_seen_at: 2023-09-18T15:20:35.941305+00:00
+        last_action: ADDED
+        deleted_at: deleted_at
+        last_modified_at: 2023-09-18T15:20:35.941305+00:00
+      properties:
+        deleted_at:
+          description: The timestamp at which Nango detected the record as deleted
+          type: string
+          nullable: true
+        last_action:
+          description: The last action seen on this record
+          enum:
+          - ADDED
+          - UPDATED
+          - DELETED
+          type: string
+        first_seen_at:
+          description: The timestamp at which Nango first saw this record
+          example: 2023-09-18T15:20:35.941305+00:00
+          type: string
+        last_modified_at:
+          description: The timestamp at which Nango last detected a change to this
+            record
+          example: 2023-09-18T15:20:35.941305+00:00
+          type: string
+        cursor:
+          description: The current cursor of the record. Use this to fetch records
+            updated after this record
+          example: MjAyNC0wMy0wNFQwNjo1OTo1MS40NzE0NDEtMDU6MDB8fDE1Y2NjODA1LTY0ZDUtNDk0MC1hN2UwLTQ1ZmM3MDQ5OTdhMQ==
+          type: string
+    _connection_get_200_response_configs_inner:
+      example:
+        metadata: "{}"
+        connection_id: connection_id
+        provider: provider
+        provider_config_key: provider_config_key
+        created: created
+        id: 0
+      properties:
+        id:
+          description: The internal Nango ID used for the connection.
+          type: integer
+        connection_id:
+          description: The connection ID used to create the connection.
+          type: string
+        provider:
+          description: The Nango API Configuration.
+          type: string
+        provider_config_key:
+          description: "The integration ID used to create the connection (aka Unique\
+            \ Key, Provider Config Key)."
+          type: string
+        created:
+          description: Connection creation date.
+          type: string
+        metadata:
+          description: Custom metadata attached to the connection
+          type: object
+      required:
+      - connection_id
+      - created
+      - id
+      - provider
+      - provider_config_key
+    _sync_records_get_200_response_inner:
+      example:
+        your-properties: "Your synced data, in the schema you (or Nango) defined in\
+          \ nango.yaml"
+        _nango_metadata:
+          first_seen_at: 2023-09-18T15:20:35.941305+00:00
+          last_action: ADDED
+          deleted_at: deleted_at
+          last_modified_at: 2023-09-18T15:20:35.941305+00:00
+      properties:
+        your-properties:
+          description: The data Nango synced in for you
+          example: "Your synced data, in the schema you (or Nango) defined in nango.yaml"
+          type: string
+        _nango_metadata:
+          $ref: '#/components/schemas/_sync_records_get_200_response_inner__nango_metadata'
+    _scripts_config_get_200_response_actions_inner_models_inner_fields_inner:
+      example:
+        name: id
+        type: integer
+      properties:
+        name:
+          example: id
+          type: string
+        type:
+          example: integer
+          type: string
+    _scripts_config_get_200_response_actions_inner:
+      example:
+        last_deployed: 2024-02-28T20:16:38.052Z
+        models:
+        - name: GithubIssue
+          fields:
+          - name: id
+            type: integer
+          - name: id
+            type: integer
+        - name: GithubIssue
+          fields:
+          - name: id
+            type: integer
+          - name: id
+            type: integer
+        endpoints:
+        - "{}"
+        - "{}"
+        pre_built: false
+        description: |
+          Fetches the Github issues from all a user's repositories.
+          Details: full sync, doesn't track deletes, metadata is not required.
+        type: sync
+        version: "4"
+        nango_yaml_version: v2
+        input: "{}"
+        name: github-issues
+        is_public: false
+        attributes: "{}"
+        returns: "{}"
+        scopes:
+        - public_repo
+        - public_repo
+      properties:
+        name:
+          example: github-issues
+          type: string
+        type:
+          example: sync
+          type: string
+        models:
+          items:
+            $ref: '#/components/schemas/_scripts_config_get_200_response_actions_inner_models_inner'
+          type: array
+        last_deployed:
+          example: 2024-02-28T20:16:38.052Z
+          type: string
+        is_public:
+          example: false
+          type: boolean
+        pre_built:
+          example: false
+          type: boolean
+        version:
+          example: "4"
+          type: string
+        attributes:
+          type: object
+        input:
+          type: object
+        returns:
+          type: object
+        description:
+          example: |
+            Fetches the Github issues from all a user's repositories.
+            Details: full sync, doesn't track deletes, metadata is not required.
+          type: string
+        scopes:
+          items:
+            example: public_repo
+            type: string
+          type: array
+        endpoints:
+          items:
+            type: object
+          type: array
+        nango_yaml_version:
+          example: v2
+          type: string
+    _connection_metadata_post_request_connection_id:
+      oneOf:
+      - description: The connection ID used to set the metadata on.
+        example: connection-123
+        type: string
+      - description: The connection IDs used to set the metadata on. If one connection
+          id is invalid in the array the entire operation is aborted with no changes
+          made.
+        items:
+          example: connection-123
+          type: string
+    _environment_variables_get_200_response_inner:
+      example:
+        name: MY_SECRET_KEY
+        value: SK_373892NSHFNCOWFO...
+      properties:
+        name:
+          description: The name of the environment variable
+          example: MY_SECRET_KEY
+          type: string
+        value:
+          description: The value of the environment variable
+          example: SK_373892NSHFNCOWFO...
+          type: string
+    _config_get_200_response_configs_inner:
+      example:
+        provider: provider
+        unique_key: unique_key
+      properties:
+        unique_key:
+          description: The integration ID that you created in Nango.
+          type: string
+        provider:
+          description: The Nango API Configuration.
+          type: string
+      required:
+      - provider
+      - unique_key
+    _config_post_request:
+      properties:
+        provider_config_key:
+          description: "A unique integration ID, which you will use in the other API\
+            \ calls to reference this integration."
+          type: string
+        provider:
+          description: The Nango API Configuration.
+          type: string
+        oauth_client_id:
+          description: The ID of your OAuth app (registed with the external API).
+            Required for OAuth APIs.
+          type: string
+        oauth_client_secret:
+          description: The secret of your OAuth app (registed with the external API).
+            Required for OAuth APIs.
+          type: string
+        oauth_scopes:
+          description: Comma separated list of scopes.
+          type: string
+      required:
+      - provider
+      - provider_config_key
+    _sync_start_post_request:
+      properties:
+        provider_config_key:
+          description: The ID of the integration that you established within Nango.
+          type: string
+        connection_id:
+          description: "The ID of the connection. If omitted, the syncs will be started\
+            \ for all relevant connections."
+          type: string
+        syncs:
+          description: A list of sync names that you wish to start.
+          items:
+            type: string
+          type: array
+      required:
+      - provider_config_key
+      - syncs
+    _sync_status_get_200_response:
+      example:
+        syncs:
+        - name: name
+          nextScheduledSyncAt: nextScheduledSyncAt
+          latestResult: "{}"
+          id: id
+          type: INCREMENTAL
+          status: RUNNING
+          finishedAt: finishedAt
+          frequency: frequency
+        - name: name
+          nextScheduledSyncAt: nextScheduledSyncAt
+          latestResult: "{}"
+          id: id
+          type: INCREMENTAL
+          status: RUNNING
+          finishedAt: finishedAt
+          frequency: frequency
+      properties:
+        syncs:
+          items:
+            $ref: '#/components/schemas/_sync_status_get_200_response_syncs_inner'
+          type: array
+    _action_trigger_post_200_response:
+      example:
+        your-properties: The data returned by the action
+      properties:
+        your-properties:
+          description: The data returned by the action
+          example: The data returned by the action
+          type: string
+    _config_get_200_response:
+      example:
+        configs:
+        - provider: provider
+          unique_key: unique_key
+        - provider: provider
+          unique_key: unique_key
+      properties:
+        configs:
+          items:
+            $ref: '#/components/schemas/_config_get_200_response_configs_inner'
+          type: array
+      required:
+      - configs
+    _connection_metadata_post_request:
+      properties:
+        connection_id:
+          $ref: '#/components/schemas/_connection_metadata_post_request_connection_id'
+        provider_config_key:
+          description: The integration ID used to create the connection (aka Unique
+            Key).
+          type: string
+        metadata:
+          type: object
+      required:
+      - connection_id
+      - metadata
+      - provider_config_key
+    _connection_post_request:
+      properties:
+        connection_id:
+          description: The connection ID used to create the connection.
+          type: string
+        provider_config_key:
+          description: The integration ID that you created on Nango.
+          type: string
+        access_token:
+          description: "(OAuth 2, required) Existing access token."
+          type: string
+        refresh_token:
+          description: "(OAuth 2, optional) Pass the refresh token if you have it."
+          type: string
+        expires_at:
+          description: "(OAuth 2, optional) Safer and preferred."
+          format: date
+          type: string
+        expires_in:
+          description: "(OAuth 2, optional) In seconds."
+          type: integer
+        no_expiration:
+          description: "(OAuth2, optional) If the provider gives access tokens that\
+            \ don't expire, pass in `true` to avoid an import validation error."
+          type: boolean
+        oauth_client_id_override:
+          description: "(OAuth2, optional) Override the integration's OAuth client\
+            \ id"
+          type: string
+        oauth_client_secret_override:
+          description: "(OAuth2, optional) Override the integration's OAuth client\
+            \ secret"
+          type: string
+        oauth_token:
+          description: "(OAuth 1, required) The client token to be attached to the\
+            \ connection."
+          type: string
+        oauth_token_secret:
+          description: "(OAuth 1, required) The client token secret to be attached\
+            \ to the connection."
+          type: string
+        metadata:
+          description: "(OAuth, required for some APIs) Metadata to be attached to\
+            \ the connection."
+          type: object
+        connection_config:
+          description: "(OAuth, required for some APIs) Additional configuration to\
+            \ be attached to the connection."
+          type: object
+        username:
+          description: "(Basic, required) username to be attached to the connection."
+          type: string
+        password:
+          description: "(Basic, required) password to be attached to the connection."
+          type: string
+        api_key:
+          description: "(API Key, required) API key to be attached to the connection."
+          type: string
+      required:
+      - connection_id
+      - provider_config_key
+    _records_get_200_response:
+      example:
+        next_cursor: MjAyMy0xMS0xN1QxMTo0NzoxNC40NDcrMDI6MDB8fDAzZTA1NzIxLWNiZmQtNGYxNS1iYTNhLWFlNjM2Y2MwNmEw==
+        records:
+        - your-properties: "Your synced data, in the schema you (or Nango) defined\
+            \ in nango.yaml"
+          _nango_metadata:
+            cursor: MjAyNC0wMy0wNFQwNjo1OTo1MS40NzE0NDEtMDU6MDB8fDE1Y2NjODA1LTY0ZDUtNDk0MC1hN2UwLTQ1ZmM3MDQ5OTdhMQ==
+            first_seen_at: 2023-09-18T15:20:35.941305+00:00
+            last_action: ADDED
+            deleted_at: deleted_at
+            last_modified_at: 2023-09-18T15:20:35.941305+00:00
+        - your-properties: "Your synced data, in the schema you (or Nango) defined\
+            \ in nango.yaml"
+          _nango_metadata:
+            cursor: MjAyNC0wMy0wNFQwNjo1OTo1MS40NzE0NDEtMDU6MDB8fDE1Y2NjODA1LTY0ZDUtNDk0MC1hN2UwLTQ1ZmM3MDQ5OTdhMQ==
+            first_seen_at: 2023-09-18T15:20:35.941305+00:00
+            last_action: ADDED
+            deleted_at: deleted_at
+            last_modified_at: 2023-09-18T15:20:35.941305+00:00
+      properties:
+        records:
+          items:
+            $ref: '#/components/schemas/_records_get_200_response_records_inner'
+          type: array
+        next_cursor:
+          description: The base64-encoded cursor for pagination
+          example: MjAyMy0xMS0xN1QxMTo0NzoxNC40NDcrMDI6MDB8fDAzZTA1NzIxLWNiZmQtNGYxNS1iYTNhLWFlNjM2Y2MwNmEw==
+          type: string
+    _connection_metadata_patch_200_response_connection_id:
+      oneOf:
+      - description: The connection ID used to update the metadata on. Returns an
+          array of connection ids if an array is passed in.
+        example: connection-123
+        type: string
+      - description: The connection IDs used to update the metadata on. If one connection
+          id is invalid in the array the entire operation is aborted with no changes
+          made.
+        items:
+          example: connection-123
+          type: string
+    _connection_metadata_patch_request:
+      properties:
+        connection_id:
+          $ref: '#/components/schemas/_connection_metadata_patch_request_connection_id'
+        provider_config_key:
+          description: The integration ID used to create the connection (aka Unique
+            Key).
+          type: string
+        metadata:
+          type: object
+      required:
+      - connection_id
+      - metadata
+      - provider_config_key
+    _connection_metadata_patch_200_response:
+      example:
+        metadata: "{}"
+        connection_id: connection-123
+        provider_config_key: provider_config_key
+      properties:
+        connection_id:
+          $ref: '#/components/schemas/_connection_metadata_patch_200_response_connection_id'
+        provider_config_key:
+          description: The integration ID used to create the connection (aka Unique
+            Key).
+          type: string
+        metadata:
+          type: object
+    _records_get_200_response_records_inner:
+      example:
+        your-properties: "Your synced data, in the schema you (or Nango) defined in\
+          \ nango.yaml"
+        _nango_metadata:
+          cursor: MjAyNC0wMy0wNFQwNjo1OTo1MS40NzE0NDEtMDU6MDB8fDE1Y2NjODA1LTY0ZDUtNDk0MC1hN2UwLTQ1ZmM3MDQ5OTdhMQ==
+          first_seen_at: 2023-09-18T15:20:35.941305+00:00
+          last_action: ADDED
+          deleted_at: deleted_at
+          last_modified_at: 2023-09-18T15:20:35.941305+00:00
+      properties:
+        your-properties:
+          description: The data Nango synced in for you
+          example: "Your synced data, in the schema you (or Nango) defined in nango.yaml"
+          type: string
+        _nango_metadata:
+          $ref: '#/components/schemas/_records_get_200_response_records_inner__nango_metadata'
+    _config__providerConfigKey__get_200_response:
+      example:
+        config:
+          provider: provider
+          syncs:
+          - updated_at: updated_at
+            name: name
+            created_at: created_at
+            description: description
+          - updated_at: updated_at
+            name: name
+            created_at: created_at
+            description: description
+          unique_key: unique_key
+          actions:
+          - updated_at: updated_at
+            name: name
+            created_at: created_at
+          - updated_at: updated_at
+            name: name
+            created_at: created_at
+      properties:
+        config:
+          $ref: '#/components/schemas/_config__providerConfigKey__get_200_response_config'
+      required:
+      - config
