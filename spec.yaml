@@ -297,9 +297,9 @@ paths:
                             schema:
                                 type: object
                                 required:
-                                    - configs
+                                    - connections
                                 properties:
-                                    configs:
+                                    connections:
                                         type: array
                                         items:
                                             type: object
