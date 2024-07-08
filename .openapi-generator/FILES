@@ -18,7 +18,7 @@ docs/ConfigPut200Response.md
 docs/ConfigPut400Response.md
 docs/ConfigPutRequest.md
 docs/ConnectionGet200Response.md
-docs/ConnectionGet200ResponseConfigsInner.md
+docs/ConnectionGet200ResponseConnectionsInner.md
 docs/ConnectionMetadataPatch200Response.md
 docs/ConnectionMetadataPatch200ResponseConnectionId.md
 docs/ConnectionMetadataPatchRequest.md
@@ -66,7 +66,7 @@ model__config_put_200_response.go
 model__config_put_400_response.go
 model__config_put_request.go
 model__connection_get_200_response.go
-model__connection_get_200_response_configs_inner.go
+model__connection_get_200_response_connections_inner.go
 model__connection_metadata_patch_200_response.go
 model__connection_metadata_patch_200_response_connection_id.go
 model__connection_metadata_patch_request.go

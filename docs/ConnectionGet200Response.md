@@ -4,13 +4,13 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Configs** | [**[]ConnectionGet200ResponseConfigsInner**](ConnectionGet200ResponseConfigsInner.md) |  | 
+**Connections** | [**[]ConnectionGet200ResponseConnectionsInner**](ConnectionGet200ResponseConnectionsInner.md) |  | 
 
 ## Methods
 
 ### NewConnectionGet200Response
 
-`func NewConnectionGet200Response(configs []ConnectionGet200ResponseConfigsInner, ) *ConnectionGet200Response`
+`func NewConnectionGet200Response(connections []ConnectionGet200ResponseConnectionsInner, ) *ConnectionGet200Response`
 
 NewConnectionGet200Response instantiates a new ConnectionGet200Response object
 This constructor will assign default values to properties that have it defined,
@@ -25,24 +25,24 @@ NewConnectionGet200ResponseWithDefaults instantiates a new ConnectionGet200Respo
 This constructor will only assign default values to properties that have it defined,
 but it doesn't guarantee that properties required by API are set
 
-### GetConfigs
+### GetConnections
 
-`func (o *ConnectionGet200Response) GetConfigs() []ConnectionGet200ResponseConfigsInner`
+`func (o *ConnectionGet200Response) GetConnections() []ConnectionGet200ResponseConnectionsInner`
 
-GetConfigs returns the Configs field if non-nil, zero value otherwise.
+GetConnections returns the Connections field if non-nil, zero value otherwise.
 
-### GetConfigsOk
+### GetConnectionsOk
 
-`func (o *ConnectionGet200Response) GetConfigsOk() (*[]ConnectionGet200ResponseConfigsInner, bool)`
+`func (o *ConnectionGet200Response) GetConnectionsOk() (*[]ConnectionGet200ResponseConnectionsInner, bool)`
 
-GetConfigsOk returns a tuple with the Configs field if it's non-nil, zero value otherwise
+GetConnectionsOk returns a tuple with the Connections field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetConfigs
+### SetConnections
 
-`func (o *ConnectionGet200Response) SetConfigs(v []ConnectionGet200ResponseConfigsInner)`
+`func (o *ConnectionGet200Response) SetConnections(v []ConnectionGet200ResponseConnectionsInner)`
 
-SetConfigs sets Configs field to given value.
+SetConnections sets Connections field to given value.
 
 
 

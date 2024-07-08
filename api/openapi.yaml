@@ -1164,7 +1164,7 @@ components:
       - provider_config_key
     _connection_get_200_response:
       example:
-        configs:
+        connections:
         - metadata: "{}"
           connection_id: connection_id
           provider: provider
@@ -1178,12 +1178,12 @@ components:
           created: created
           id: 0
       properties:
-        configs:
+        connections:
           items:
-            $ref: '#/components/schemas/_connection_get_200_response_configs_inner'
+            $ref: '#/components/schemas/_connection_get_200_response_connections_inner'
           type: array
       required:
-      - configs
+      - connections
     _config_put_200_response:
       example:
         config:
@@ -1819,40 +1819,6 @@ components:
             updated after this record
           example: MjAyNC0wMy0wNFQwNjo1OTo1MS40NzE0NDEtMDU6MDB8fDE1Y2NjODA1LTY0ZDUtNDk0MC1hN2UwLTQ1ZmM3MDQ5OTdhMQ==
           type: string
-    _connection_get_200_response_configs_inner:
-      example:
-        metadata: "{}"
-        connection_id: connection_id
-        provider: provider
-        provider_config_key: provider_config_key
-        created: created
-        id: 0
-      properties:
-        id:
-          description: The internal Nango ID used for the connection.
-          type: integer
-        connection_id:
-          description: The connection ID used to create the connection.
-          type: string
-        provider:
-          description: The Nango API Configuration.
-          type: string
-        provider_config_key:
-          description: "The integration ID used to create the connection (aka Unique\
-            \ Key, Provider Config Key)."
-          type: string
-        created:
-          description: Connection creation date.
-          type: string
-        metadata:
-          description: Custom metadata attached to the connection
-          type: object
-      required:
-      - connection_id
-      - created
-      - id
-      - provider
-      - provider_config_key
     _sync_records_get_200_response_inner:
       example:
         your-properties: "Your synced data, in the schema you (or Nango) defined in\
@@ -2097,6 +2063,40 @@ components:
       required:
       - connection_id
       - metadata
+      - provider_config_key
+    _connection_get_200_response_connections_inner:
+      example:
+        metadata: "{}"
+        connection_id: connection_id
+        provider: provider
+        provider_config_key: provider_config_key
+        created: created
+        id: 0
+      properties:
+        id:
+          description: The internal Nango ID used for the connection.
+          type: integer
+        connection_id:
+          description: The connection ID used to create the connection.
+          type: string
+        provider:
+          description: The Nango API Configuration.
+          type: string
+        provider_config_key:
+          description: "The integration ID used to create the connection (aka Unique\
+            \ Key, Provider Config Key)."
+          type: string
+        created:
+          description: Connection creation date.
+          type: string
+        metadata:
+          description: Custom metadata attached to the connection
+          type: object
+      required:
+      - connection_id
+      - created
+      - id
+      - provider
       - provider_config_key
     _connection_post_request:
       properties:

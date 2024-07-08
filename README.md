@@ -123,7 +123,7 @@ Class | Method | HTTP request | Description
  - [ConfigPut400Response](docs/ConfigPut400Response.md)
  - [ConfigPutRequest](docs/ConfigPutRequest.md)
  - [ConnectionGet200Response](docs/ConnectionGet200Response.md)
- - [ConnectionGet200ResponseConfigsInner](docs/ConnectionGet200ResponseConfigsInner.md)
+ - [ConnectionGet200ResponseConnectionsInner](docs/ConnectionGet200ResponseConnectionsInner.md)
  - [ConnectionMetadataPatch200Response](docs/ConnectionMetadataPatch200Response.md)
  - [ConnectionMetadataPatch200ResponseConnectionId](docs/ConnectionMetadataPatch200ResponseConnectionId.md)
  - [ConnectionMetadataPatchRequest](docs/ConnectionMetadataPatchRequest.md)

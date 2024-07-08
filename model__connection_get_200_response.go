@@ -21,7 +21,7 @@ var _ MappedNullable = &ConnectionGet200Response{}
 
 // ConnectionGet200Response struct for ConnectionGet200Response
 type ConnectionGet200Response struct {
-	Configs []ConnectionGet200ResponseConfigsInner `json:"configs"`
+	Connections []ConnectionGet200ResponseConnectionsInner `json:"connections"`
 }
 
 type _ConnectionGet200Response ConnectionGet200Response
@@ -30,9 +30,9 @@ type _ConnectionGet200Response ConnectionGet200Response
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewConnectionGet200Response(configs []ConnectionGet200ResponseConfigsInner) *ConnectionGet200Response {
+func NewConnectionGet200Response(connections []ConnectionGet200ResponseConnectionsInner) *ConnectionGet200Response {
 	this := ConnectionGet200Response{}
-	this.Configs = configs
+	this.Connections = connections
 	return &this
 }
 
@@ -44,28 +44,28 @@ func NewConnectionGet200ResponseWithDefaults() *ConnectionGet200Response {
 	return &this
 }
 
-// GetConfigs returns the Configs field value
-func (o *ConnectionGet200Response) GetConfigs() []ConnectionGet200ResponseConfigsInner {
+// GetConnections returns the Connections field value
+func (o *ConnectionGet200Response) GetConnections() []ConnectionGet200ResponseConnectionsInner {
 	if o == nil {
-		var ret []ConnectionGet200ResponseConfigsInner
+		var ret []ConnectionGet200ResponseConnectionsInner
 		return ret
 	}
 
-	return o.Configs
+	return o.Connections
 }
 
-// GetConfigsOk returns a tuple with the Configs field value
+// GetConnectionsOk returns a tuple with the Connections field value
 // and a boolean to check if the value has been set.
-func (o *ConnectionGet200Response) GetConfigsOk() ([]ConnectionGet200ResponseConfigsInner, bool) {
+func (o *ConnectionGet200Response) GetConnectionsOk() ([]ConnectionGet200ResponseConnectionsInner, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return o.Configs, true
+	return o.Connections, true
 }
 
-// SetConfigs sets field value
-func (o *ConnectionGet200Response) SetConfigs(v []ConnectionGet200ResponseConfigsInner) {
-	o.Configs = v
+// SetConnections sets field value
+func (o *ConnectionGet200Response) SetConnections(v []ConnectionGet200ResponseConnectionsInner) {
+	o.Connections = v
 }
 
 func (o ConnectionGet200Response) MarshalJSON() ([]byte, error) {
@@ -78,7 +78,7 @@ func (o ConnectionGet200Response) MarshalJSON() ([]byte, error) {
 
 func (o ConnectionGet200Response) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	toSerialize["configs"] = o.Configs
+	toSerialize["connections"] = o.Connections
 	return toSerialize, nil
 }
 
@@ -87,7 +87,7 @@ func (o *ConnectionGet200Response) UnmarshalJSON(data []byte) (err error) {
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
-		"configs",
+		"connections",
 	}
 
 	allProperties := make(map[string]interface{})
